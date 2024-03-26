@@ -1,0 +1,49 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Dependency files
+*.d
+
+# Debug files
+*.pdb
+*.pdb.*
+
+# Miscellaneous files
+*.log
+*.swp
+*.tmp
+
+# macOS directory attributes
+.DS_Store
+
+# Windows Thumbs.db file
+Thumbs.db
+
+# Visual Studio Code directory (if using VS Code)
+.vscode/
