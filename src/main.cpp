@@ -9,22 +9,27 @@
 #include <vector>
 #include <iostream>
 #include "voronoi.hpp"
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 #define POINTCOUNT 100
 
 int windowX = 1024;
 int windowY = 1024;
+glm::mat4 projectionMatrix = glm::ortho(0.0f, static_cast<float>(windowX), 0.0f, static_cast<float>(windowY), -1.0f, 1.0f);
 
 const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "uniform mat4 projection;\n"
     "void main()\n"
     "{\n"
-    " gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    " gl_Position = projection * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
     "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
+    "out vec4 FragColor;\n" 
     "void main()\n"
     "{\n"
     " FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
@@ -140,6 +145,7 @@ int main(void)
     unsigned int shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
+    
     glLinkProgram(shaderProgram);
     // check for linking errors
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
@@ -164,8 +170,8 @@ int main(void)
     std::cout << points.size() << std::endl;
     for (auto & point : points) 
     {
-        point.setX(point.getX()/windowX);
-        point.setY(point.getY()/windowY);
+        point.setX(point.getX());
+        point.setY(point.getY());
     }
 
 
@@ -192,6 +198,8 @@ int main(void)
 
     //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
+
+    
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -199,7 +207,10 @@ int main(void)
         /* Render here */
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
         glUseProgram(shaderProgram);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_POINTS, 0, POINTCOUNT*POINTCOUNT);
 
