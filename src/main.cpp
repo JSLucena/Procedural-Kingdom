@@ -190,8 +190,7 @@ int main(void)
     glBindVertexArray(0); 
 
 
-    
-
+    //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
