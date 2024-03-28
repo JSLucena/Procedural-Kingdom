@@ -14,7 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-#define POINTCOUNT 100
+#define POINTCOUNT 128
 
 int windowX = 1024;
 int windowY = 1024;
@@ -35,24 +35,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
     " FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\0";
 
-/*
-// Define the size of a single Point object in bytes
-constexpr size_t POINT_SIZE = sizeof(float) * 3; // Assuming each Point consists of x, y, and z coordinates
 
-// Function to convert a vector of Point objects into a raw array of floats
-std::vector<float> flattenPoints( std::vector<Point>& points)
-{
-    std::vector<float> flattenedData;
-    flattenedData.reserve(points.size() * 3); // Reserve enough space for x, y, and z of each Point
-    for ( Point& point : points)
-    {
-        flattenedData.push_back(point.getX()/windowX);
-        flattenedData.push_back(point.getY()/windowY);
-        flattenedData.push_back(point.getZ());
-    }
-    return flattenedData;
-}
-*/
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -78,7 +61,8 @@ void renderLoop()
 
 int main(void)
 {
-    std::vector<Point> points;
+    std::vector<GamePoint> points;
+    std::vector<float> printPoints;
     float poissonRadius;
 
 
@@ -156,24 +140,19 @@ int main(void)
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
-    }; 
+
 
     /* Point initialization */
-    poissonRadius = (windowX/POINTCOUNT + windowY/POINTCOUNT)/3;
+    poissonRadius = (windowX/POINTCOUNT + windowY/POINTCOUNT)/4;
     possionDiskSampling(points,POINTCOUNT,poissonRadius,windowX,windowY);
     std::cout << points.size() << std::endl;
     for (auto & point : points) 
     {
-        point.setX(point.getX());
-        point.setY(point.getY());
+        printPoints.push_back(point.getX());
+        printPoints.push_back(point.getY());
+        printPoints.push_back(point.getZ());
     }
-
+    buildVoronoi(points);
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -183,7 +162,7 @@ int main(void)
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     //glBufferData(GL_ARRAY_BUFFER, flattenedData.size() * sizeof(float), flattenedData.data(), GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(float), points.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, printPoints.size() * sizeof(float), printPoints.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -207,7 +186,7 @@ int main(void)
         /* Render here */
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+
         GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
         glUseProgram(shaderProgram);
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));

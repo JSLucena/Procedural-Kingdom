@@ -1,26 +1,27 @@
 #include "point.hpp"
 #include <cmath>
-Point::Point()
+GamePoint::GamePoint()
 {
 
 };
-Point::~Point()
+GamePoint::~GamePoint()
 {
 
 };
-Point::Point(float x, float y)
+GamePoint::GamePoint(float x, float y)
 {
-    this->x = x;
-    this->y = y;
+    p.x(x);
+    p.y(y);
 }
-float Point::getX() {return x;};
-float Point::getY() {return y;};
-float Point::getZ() {return z;};
-void Point::setX(float x) {this->x = x;};
-void  Point::setY(float y) {this->y = y;};
-void  Point::setZ(float z) {this->z = z;};
+float GamePoint::getX() {return p.x();};
+float GamePoint::getY() {return p.y();};
+float GamePoint::getZ() {return z;};
+Point GamePoint::getP() {return p;};
+void GamePoint::setX(float x) {p.x(x);};
+void  GamePoint::setY(float y) { p.y(y);};
+void  GamePoint::setZ(float z) {this->z = z;};
 
-float Point::distanceTo(Point p)
+float GamePoint::distanceTo(Point other)
 {
-    return sqrt( pow(p.getX() - this->getX(),2) + pow(p.getY() - this->getY(),2) );
+    return sqrt( pow(other.x() - p.x(),2) + pow(other.y() - p.y(),2) );
 }
