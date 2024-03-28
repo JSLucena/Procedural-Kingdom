@@ -3,10 +3,10 @@ TARGET = main
 
 # Define the C source files
 CC = g++  # Replace with your preferred C compiler if needed
-CFLAGS = -Wall -pthread -std=c++20 -g #-flto# Add additional flags like -g for debugging
+CFLAGS = -Wall -pthread -std=c++20 -fdata-sections -ffunction-sections -flto -g ## Add additional flags like -g for debugging
 INCLUDE_DIRS += include/
 CFLAGS += -I$(INCLUDE_DIRS)
-LDFLAGS = -lglfw -lGLU -lGL -lXrandr -lXxf86vm -lXi -lXinerama -lX11 -lrt -ldl -lboost_system #-flto
+LDFLAGS =  -lglfw -lvulkan -lpthread -lXxf86vm -lXi -lXinerama -lX11 -lrt -ldl -lXrandr  -lboost_system -Wl,--gc-sections -flto
 SRC_FILES_C += $(wildcard src/*.c)# Add additional source files here (separate by space)
 SRC_FILES_CPP += $(wildcard src/*.cpp)# Add additional source files here (separate by space)
 
