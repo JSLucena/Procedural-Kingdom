@@ -10,6 +10,7 @@ private:
     Point p;
     //boost::polygon::voronoi_cell<double>* cell;
     float z = 0.0f;
+    bool invalid = false;
 public:
     GamePoint();
     GamePoint(float x, float y);
@@ -18,9 +19,11 @@ public:
     float getY();
     float getZ();
     Point getP();
+    bool isInvalid();
     void setZ(float z);
     void setX(float x);
     void setY(float y);
+    void setInvalid(bool b);
     float distanceTo(Point p);
 };
 

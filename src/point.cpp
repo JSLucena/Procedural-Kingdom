@@ -17,9 +17,11 @@ float GamePoint::getX() {return p.x();};
 float GamePoint::getY() {return p.y();};
 float GamePoint::getZ() {return z;};
 Point GamePoint::getP() {return p;};
-void GamePoint::setX(float x) {p.x(x);};
+bool  GamePoint::isInvalid(){return invalid;};
+void  GamePoint::setX(float x) {p.x(x);};
 void  GamePoint::setY(float y) { p.y(y);};
 void  GamePoint::setZ(float z) {this->z = z;};
+void  GamePoint::setInvalid(bool b){invalid = b;};
 
 float GamePoint::distanceTo(Point other)
 {
