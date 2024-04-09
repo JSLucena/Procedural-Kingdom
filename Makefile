@@ -15,22 +15,34 @@ SRC_FILES_CPP += $(wildcard src/*.cpp)# Add additional source files here (separa
 OBJECTS = $(SRC_FILES_C:.c=.o)  # Replace .c with .o for object files
 OBJECTS += $(SRC_FILES_CPP:.cpp=.o)  # Replace .c with .o for object files
 
-# Main rule - builds the executable
-all: $(TARGET)
 
-# Rule to compile a specific source file
+
+# Main rule - builds the executable
+all: $(TARGET) shaders
+
+# Rule to compile a specific source file echo "Compiling $< to $@..." echo "Compiling $< to $@..."
 %.o: %.c
-	echo "Compiling $< to $@..."
 	$(CC) $(CFLAGS) -c $< -o $@
 %.o: %.cpp
-	echo "Compiling $< to $@..."
 	$(CC) $(CFLAGS) -c $< -o $@
 # Rule to link the object files into the final executable
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(LDFLAGS) -o $(TARGET)  
 
+shaders: shaders/vert.spv shaders/frag.spv
+
+shaders/vert.spv: shaders/shader.vert
+	glslc shaders/shader.vert -o shaders/vert.spv
+
+shaders/frag.spv: shaders/shader.frag
+	glslc shaders/shader.frag -o shaders/frag.spv
+
+clean: cleanobj cleanshader
 # Rule to clean up object files
-clean:
+cleanobj:
 # Remove object files and executable
-	rm -f $(OBJECTS) $(TARGET)  
+	rm -f $(OBJECTS) $(TARGET)
+
+cleanshader:
+	rm -f shaders/*.spv
 
