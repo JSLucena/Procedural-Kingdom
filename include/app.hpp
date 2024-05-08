@@ -78,6 +78,11 @@ private:
     VkExtent2D swapChainExtent;
 
     std::vector<VkImageView> swapChainImageViews;
+
+    VkRenderPass renderPass;
+    VkPipelineLayout pipelineLayout;
+    
+    VkPipeline graphicsPipeline;
     
     void initWindow(); 
     void createInstance();
@@ -91,6 +96,7 @@ private:
     void createSwapChain();
     void createImageView();
     void createGraphicsPipeline();
+    void createRenderPass();
     VkShaderModule createShaderModule(const std::vector<char>& code);
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     bool isDeviceSuitable(VkPhysicalDevice device);
