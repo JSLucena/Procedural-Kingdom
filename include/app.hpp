@@ -78,12 +78,20 @@ private:
     VkExtent2D swapChainExtent;
 
     std::vector<VkImageView> swapChainImageViews;
-
+    ///////////////////////////////////////////
     VkRenderPass renderPass;
     VkPipelineLayout pipelineLayout;
-    
+
     VkPipeline graphicsPipeline;
-    
+
+    std::vector<VkFramebuffer> swapChainFramebuffers;
+    VkCommandPool commandPool;
+    VkCommandBuffer commandBuffer;
+
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+    VkFence inFlightFence;
+
     void initWindow(); 
     void createInstance();
     void initVulkan();
@@ -95,8 +103,18 @@ private:
     void createSurface();
     void createSwapChain();
     void createImageView();
+
     void createGraphicsPipeline();
     void createRenderPass();
+    void createFrameBuffers();
+    void createCommandPool();
+    void createCommandBuffer();
+
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    void drawFrame();
+    void createSyncObjects();
+
     VkShaderModule createShaderModule(const std::vector<char>& code);
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     bool isDeviceSuitable(VkPhysicalDevice device);
