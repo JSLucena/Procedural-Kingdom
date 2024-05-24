@@ -17,8 +17,21 @@
 #include <limits> // Necessary for std::numeric_limits
 #include <algorithm> // Necessary for std::clamp
 #include "helper.hpp"
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
 #include <filesystem>
+
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <chrono>
+
+
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 namespace fs = std::filesystem;
@@ -72,11 +85,15 @@ const std::vector<uint16_t> indices = {
     0, 1, 2, 2, 3, 0
 };
 
-#ifdef NDEBUG
-    const bool enableValidationLayers = false;
-#else
-    const bool enableValidationLayers = true;
-#endif
+struct UniformBufferObject {
+    glm::vec2 foo;
+    alignas(16) glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 proj;
+};
+
+
+
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -118,6 +135,8 @@ private:
     std::vector<VkImageView> swapChainImageViews;
     ///////////////////////////////////////////
     VkRenderPass renderPass;
+
+    VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout pipelineLayout;
 
     VkPipeline graphicsPipeline;
@@ -139,7 +158,12 @@ private:
     VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
     VkDeviceMemory indexBufferMemory;
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+    std::vector<void*> uniformBuffersMapped;
 
+    VkDescriptorPool descriptorPool;
+    std::vector<VkDescriptorSet> descriptorSets;
 
     void initWindow(); 
     void createInstance();
@@ -173,6 +197,13 @@ private:
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     void createIndexBuffer();
     
+    void createDescriptorSetLayout();
+
+    void createUniformBuffers();
+    void updateUniformBuffer(uint32_t currentImage);
+
+    void createDescriptorPool();
+    void createDescriptorSets();
     
     VkShaderModule createShaderModule(const std::vector<char>& code);
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
@@ -193,6 +224,7 @@ private:
     static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     
+
 };
 
 #endif
